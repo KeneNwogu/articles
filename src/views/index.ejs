@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue@3"></script>
+    <title>Articles Hub</title>
+</head>
+<body id="app">
+    <div>
+        <h1>Articles App</h1>
+        <p>Assessment submission. Only Default articles and a Default user is available.</p>
+    </div>
+    <div class="container">
+        <div class="article-card">
+            <p><%= article.title %></p>
+            <p><%= article.content %> Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt rerum sapiente, recusandae consequatur aliquid delectus molestias vero doloremque veniam nihil enim eaque aspernatur voluptates voluptatibus dignissimos consectetur! Sapiente, sunt. Consectetur!</p>
+            <button @click="open_comment_section">Article comments (<%= article.comments %>)</button>
+            <button>Comment on Article +</button>
+        </div>
+        <div id="comments" v-show="open_comments">
+            <div class="container" v-if="comments.length >= 1">
+                <div class="comment" v-for="comment in comments"></div>
+            </div>
+            <div class="container">
+                <p>No comment</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const { createApp } = Vue
+
+    createApp({
+        data() {
+            return {
+                message: 'Hello Vue!',
+                open_comments: false,
+                comments: []
+            }
+        },
+        async mounted(){
+            this.comments = await fetch('http://localhost:3000/v1/comments/<%= article.id %>')
+        }, 
+        methods: {
+            open_comment_section(){
+                this.open_comments = true
+            },
+            close_comment_section(){
+                this.open_comments = false
+            }
+        }
+    }).mount('#app')
+    </script>
+</body>
+</html>
